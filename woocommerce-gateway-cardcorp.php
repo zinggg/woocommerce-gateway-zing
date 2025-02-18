@@ -6,7 +6,7 @@
  * Author: Cardcorp
  * Author URI: https://cardcorp.com
  * Description: WooCommerce plugin for accepting payments through Cardcorp.
- * Version: 1.6.0
+ * Version: 1.6.1
  * Tested up to: 5.4.2
  * WC requires at least: 3.0
  * WC tested up to: 4.2.2
@@ -487,7 +487,8 @@ function init_woocommerce_cardcorp()
 				. "&customer.phone=" . $order->get_billing_phone()
 				. "&customer.givenName=" . $order->get_billing_first_name()
 				. "&customer.surname=" . $order->get_billing_last_name()
-				. "&customer.merchantCustomerId=" . $customer;
+				. "&customer.merchantCustomerId=" . $customer
+				. "&integrity=true";
 
 			if($this->settings['force3ds'] == 'yes'){
 				$data .= "&threeDSecure.challengeIndicator=04"; 
@@ -589,7 +590,7 @@ function init_woocommerce_cardcorp()
 					// ICON
 					// <div id=\"d3\"><img border=\"0\" src=\"' . plugins_url() . '/'. get_plugin_data( __FILE__ )['TextDomain'] .'/assets/images/general/cardcorp-dark.svg\" alt=\"Secure Payment\"></div>
 					$lang = strtolower(substr(get_bloginfo('language'), 0, 2));
-					echo '<script src="' . $this->cardcorp_url . '/v1/paymentWidgets.js?checkoutId=' . $status->id . '"></script>';
+                    echo '<script src="' . $this->cardcorp_url . '/v1/paymentWidgets.js?checkoutId=' . $status->id . '" integrity="' . $status->integrity . '" crossorigin="anonymous"></script>';
 					echo '<script src="https://code.jquery.com/jquery-2.1.4.min.js" type="text/javascript"></script>';
 					echo '<script type="text/javascript">
 						var wpwlOptions = { 
@@ -675,7 +676,7 @@ function init_woocommerce_cardcorp()
 					</script>';
 					if ($this->operation == 'test') echo '<div class="testmode">' . 'This is the TEST MODE. No money will be charged' . '</div>';
 					echo '<div id="cardcorp_payment_container">';
-					echo '<form action="' . $this->return_url . '" class="paymentWidgets">' . $this->cards . '</form>';
+					echo '<form action="' . $this->return_url . '" class="paymentWidgets" data-brands="' . $this->cards . '"></form>';
 					echo '</div>';
 					echo '<div style="text-align: center; margin-top: 10px; max-width: 200px; margin-left: auto; margin-right: auto;">';
 					echo '<a href="https://cardcorp.com" target="_blank">';
